@@ -1,0 +1,29 @@
+workflows:
+  native-android:
+    name: Android Workflow
+    max_build_duration: 15
+    instance_type: mac_mini_m1
+    environment:
+      groups:
+        - keystore_credentials
+        - app_store_credentials
+      vars:
+        PACKAGE_NAME: "io.codemagic.ermalapp"
+    scripts:
+      - name: Set Android SDK location
+        script: | 
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Build Android release
+        script: | 
+          ./gradlew bundleRelease # -> to create the .aab
+          # gradlew assembleRelease # -> to create the .apk
+  
+    artifacts:
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
+    publishing:
+      email:
+        recipients:
+          - user_1@example.com
+          - e.a.mateli@gmail.com
+
